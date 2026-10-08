@@ -43,3 +43,24 @@ test("photos use the site's address", () => {
   const items = buildLineItems(expandBag([{ id: "sage", qty: 1 }]), "https://themulcollection.com");
   assert.equal(items[0].price_data.product_data.images[0], "https://themulcollection.com/img/FullSizeRender.jpg");
 });
+
+import { freeShipping, taxConfig } from "../lib/order.js";
+
+test("tax stays off unless switched on", () => {
+  assert.equal(taxConfig({}), null);
+  assert.equal(taxConfig({ STRIPE_TAX_ENABLED: "yes" }), null);
+  const items = buildLineItems(expandBag([{ id: "sage", qty: 1 }]), null, taxConfig({}));
+  assert.equal(items[0].price_data.tax_behavior, undefined);
+  assert.equal(freeShipping(null).shipping_rate_data.tax_behavior, undefined);
+});
+
+test("tax switched on adds a tax behaviour and an optional valid tax code", () => {
+  const tax = taxConfig({ STRIPE_TAX_ENABLED: "true", STRIPE_TAX_CODE: "txcd_99999999" });
+  assert.deepEqual(tax, { behavior: "exclusive", code: "txcd_99999999" });
+  const items = buildLineItems(expandBag([{ id: "sage", qty: 2 }]), null, tax);
+  assert.equal(items[0].price_data.tax_behavior, "exclusive");
+  assert.equal(items[0].price_data.product_data.tax_code, "txcd_99999999");
+  assert.equal(freeShipping(tax).shipping_rate_data.tax_behavior, "exclusive");
+  assert.equal(taxConfig({ STRIPE_TAX_ENABLED: "true", STRIPE_TAX_CODE: "nonsense" }).code, undefined);
+  assert.equal(taxConfig({ STRIPE_TAX_ENABLED: "true", STRIPE_TAX_BEHAVIOR: "inclusive" }).behavior, "inclusive");
+});

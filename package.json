@@ -4,9 +4,11 @@
   "type": "module",
   "description": "themulcollection.com: site, bag and Stripe checkout",
   "scripts": {
-    "test": "node --test"
+    "test": "node --test",
+    "prepare": "git config core.hooksPath .githooks 2>/dev/null || true"
   },
   "dependencies": {
+    "@netlify/blobs": "10.7.13",
     "stripe": "22.6.2"
   },
   "engines": {
