@@ -1,0 +1,19 @@
+# Netlify reads this file on every deploy.
+[build]
+  publish = "public"              # the website files
+  functions = "netlify/functions" # small server code (Stripe checkout)
+
+[functions]
+  node_bundler = "esbuild"
+
+# Cache photos for a long time; always re-check the page itself.
+[[headers]]
+  for = "/img/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
