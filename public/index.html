@@ -937,16 +937,24 @@ h3{font-weight:700;letter-spacing:-.005em}
 @media (max-width:820px){.join{grid-template-columns:1fr}}
 .join-title{font-family:var(--font-display);font-size:clamp(1.6rem,3vw,2.1rem);margin:0 0 6px;color:var(--paper)}
 .join-copy p{margin:0;color:#D9D2C6;max-width:42ch}
-.join-fields{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.join-fields input[type=text],.join-fields input[type=email],.join-fields input[type=tel]{width:100%;padding:12px 14px;border-radius:4px;border:1px solid rgba(248,243,234,.4);background:rgba(248,243,234,.08);color:var(--paper);font:inherit}
-.join-fields input::placeholder{color:#C9C1B4}
-.join-fields #j-email{grid-column:1/-1}
-@media (max-width:480px){.join-fields{grid-template-columns:1fr}}
-.join-ok{grid-column:1/-1;display:flex;gap:10px;align-items:flex-start;font-size:.9rem;color:#E6DFD3;line-height:1.4}
-.join-ok input{width:18px;height:18px;margin-top:1px;accent-color:var(--marigold);flex:0 0 auto}
-.join .btn{grid-column:1/-1;justify-self:start;min-height:48px;padding:12px 28px}
-.join-msg{grid-column:1/-1;margin:0;font-weight:600;min-height:1.2em;color:var(--paper)}
+.join-fields{display:grid;gap:12px}
+.join-row{display:grid;gap:12px}
+.join-row.two{grid-template-columns:1fr 1fr}
+.join-row.send{grid-template-columns:1fr auto}
+.join-fields input[type=text],.join-fields input[type=email],.join-fields input[type=tel]{width:100%;height:52px;padding:0 16px;border-radius:4px;border:1px solid rgba(248,243,234,.35);background:rgba(248,243,234,.07);color:var(--paper);font:inherit;font-size:1rem;transition:border-color .15s,background .15s}
+.join-fields input::placeholder{color:#B9B2A6}
+.join-fields input:focus{outline:none;border-color:var(--marigold);background:rgba(248,243,234,.12)}
+.join .btn{height:52px;min-height:0;padding:0 34px}
+.join-ok{display:flex;gap:12px;align-items:flex-start;font-size:.88rem;color:#D9D2C6;line-height:1.45;cursor:pointer;margin-top:2px}
+.join-ok input{appearance:none;-webkit-appearance:none;width:18px;height:18px;margin:1px 0 0;flex:0 0 auto;border:1px solid rgba(248,243,234,.6);border-radius:3px;background:transparent;display:grid;place-items:center;cursor:pointer}
+.join-ok input:checked{background:var(--marigold);border-color:var(--marigold)}
+.join-ok input:checked::after{content:"";width:5px;height:9px;border:solid var(--ink);border-width:0 2px 2px 0;transform:translateY(-1px) rotate(45deg)}
+.join-ok input:focus-visible{outline:2px solid var(--marigold);outline-offset:2px}
+.join-ok a{color:var(--paper);text-underline-offset:2px;white-space:nowrap}
+.join-msg{margin:0;font-weight:600;min-height:1.2em;color:var(--paper)}
+.join-msg:empty{display:none}
 .join-msg.err{color:#F3C6BA}
+@media (max-width:520px){.join-fields{display:flex;flex-direction:column}.join-row.two{grid-template-columns:1fr}.join-row.send{display:contents}.join-ok{order:4}.join .btn{order:5;width:100%}.join-msg{order:6}}
 .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 /* email pop-up */
@@ -967,7 +975,7 @@ h3{font-weight:700;letter-spacing:-.005em}
 .pop-msg.err{color:var(--scarlet)}
 .pop-no{background:none;border:0;padding:4px;justify-self:center;color:var(--ink-2);text-decoration:underline;cursor:pointer;font:inherit;font-size:.88rem}
 .pop-x{position:absolute;top:10px;right:10px;z-index:2;width:38px;height:38px;border-radius:50%;border:0;background:rgba(248,243,234,.92);color:var(--ink);display:grid;place-items:center;cursor:pointer}
-.join-ok a{color:inherit}
+
 @media (max-width:640px){
   .pop{place-items:end center;padding:0}
   .pop-card{grid-template-columns:1fr;border-radius:14px 14px 0 0;max-height:92vh;overflow:auto;transform:translateY(100%)}
@@ -1476,12 +1484,16 @@ h3{font-weight:700;letter-spacing:-.005em}
         <p>New prints, restocks and the odd travel note. A few emails a year, never more.</p>
       </div>
       <div class="join-fields">
-        <label class="sr" for="j-name">Name</label><input id="j-name" name="name" type="text" autocomplete="name" placeholder="Name" maxlength="80">
-        <label class="sr" for="j-email">Email</label><input id="j-email" name="email" type="email" autocomplete="email" placeholder="Email" required maxlength="254">
-        <label class="sr" for="j-phone">Phone (optional)</label><input id="j-phone" name="phone" type="tel" autocomplete="tel" placeholder="Phone (optional)" maxlength="20">
+        <div class="join-row two">
+          <label class="sr" for="j-name">Name</label><input id="j-name" name="name" type="text" autocomplete="name" placeholder="Name" maxlength="80">
+          <label class="sr" for="j-phone">Phone (optional)</label><input id="j-phone" name="phone" type="tel" autocomplete="tel" placeholder="Phone (optional)" maxlength="20">
+        </div>
+        <div class="join-row send">
+          <label class="sr" for="j-email">Email</label><input id="j-email" name="email" type="email" autocomplete="email" placeholder="Email address" required maxlength="254">
+          <button class="btn" type="submit">Join</button>
+        </div>
         <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
-        <label class="join-ok"><input type="checkbox" id="j-consent" required> Yes, email me about new prints and offers. Unsubscribe any time. <a href="/privacy/">Privacy policy</a></label>
-        <button class="btn" type="submit">Join</button>
+        <label class="join-ok"><input type="checkbox" id="j-consent" required><span>Yes, email me about new prints and offers. Unsubscribe any time. <a href="/privacy/">Privacy policy</a></span></label>
         <p class="join-msg" id="j-msg" role="status" aria-live="polite"></p>
       </div>
     </form>
