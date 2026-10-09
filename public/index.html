@@ -949,6 +949,32 @@ h3{font-weight:700;letter-spacing:-.005em}
 .join-msg.err{color:#F3C6BA}
 .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+/* email pop-up */
+.pop{position:fixed;inset:0;z-index:60;display:grid;place-items:center;padding:16px;background:rgba(42,35,32,.45);opacity:0;transition:opacity .25s}
+.pop.on{opacity:1}
+.pop-card{position:relative;width:min(760px,100%);display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);background:var(--paper);border-radius:10px;overflow:hidden;box-shadow:0 24px 60px rgba(42,35,32,.35);transform:translateY(12px);transition:transform .3s}
+.pop.on .pop-card{transform:none}
+.pop-img img{width:100%;height:100%;object-fit:cover;display:block}
+.pop-body{padding:34px 30px 26px;display:grid;gap:10px;align-content:start}
+.pop-kicker{margin:0;font-size:.78rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--scarlet)}
+.pop-body h2{font-family:var(--font-display);font-size:clamp(1.7rem,3.4vw,2.2rem);line-height:1.05;margin:0}
+.pop-lead{margin:0 0 6px;color:var(--ink-2);font-size:.98rem;line-height:1.5}
+.pop-body input[type=email],.pop-body input[type=text]{width:100%;padding:13px 14px;border:1px solid var(--line);border-radius:4px;background:#fff;font:inherit;color:var(--ink)}
+.pop-body .btn{width:100%;min-height:50px;padding:13px 20px;margin-top:4px}
+.pop-fine{margin:2px 0 0;font-size:.8rem;color:var(--ink-2);line-height:1.45}
+.pop-fine a{color:var(--ink)}
+.pop-msg{margin:0;font-weight:700;min-height:1em}
+.pop-msg.err{color:var(--scarlet)}
+.pop-no{background:none;border:0;padding:4px;justify-self:center;color:var(--ink-2);text-decoration:underline;cursor:pointer;font:inherit;font-size:.88rem}
+.pop-x{position:absolute;top:10px;right:10px;z-index:2;width:38px;height:38px;border-radius:50%;border:0;background:rgba(248,243,234,.92);color:var(--ink);display:grid;place-items:center;cursor:pointer}
+.join-ok a{color:inherit}
+@media (max-width:640px){
+  .pop{place-items:end center;padding:0}
+  .pop-card{grid-template-columns:1fr;border-radius:14px 14px 0 0;max-height:92vh;overflow:auto;transform:translateY(100%)}
+  .pop-img{display:none}
+  .pop-body{padding:26px 20px calc(18px + env(safe-area-inset-bottom,0px))}
+}
+@media (prefers-reduced-motion:reduce){.pop,.pop-card{transition:none}}
 /* footer: indigo, ivory type, printed border on top */
 .foot{background:var(--indigo);color:var(--paper);position:relative;padding-top:72px}
 .foot::before{content:"";position:absolute;left:var(--gutter);right:var(--gutter);top:28px;height:1px;background:var(--marigold);opacity:.8}
@@ -1454,7 +1480,7 @@ h3{font-weight:700;letter-spacing:-.005em}
         <label class="sr" for="j-email">Email</label><input id="j-email" name="email" type="email" autocomplete="email" placeholder="Email" required maxlength="254">
         <label class="sr" for="j-phone">Phone (optional)</label><input id="j-phone" name="phone" type="tel" autocomplete="tel" placeholder="Phone (optional)" maxlength="20">
         <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
-        <label class="join-ok"><input type="checkbox" id="j-consent" required> Yes, email me about new prints and offers. Unsubscribe any time.</label>
+        <label class="join-ok"><input type="checkbox" id="j-consent" required> Yes, email me about new prints and offers. Unsubscribe any time. <a href="/privacy/">Privacy policy</a></label>
         <button class="btn" type="submit">Join</button>
         <p class="join-msg" id="j-msg" role="status" aria-live="polite"></p>
       </div>
@@ -1465,10 +1491,30 @@ h3{font-weight:700;letter-spacing:-.005em}
     </div>
     <div class="foot-bottom">
       <span>Hand block-printed in Rajasthan, India.</span>
-      <span>Keep travel simple.</span>
+      <span>Keep travel simple. · <a href="/privacy/">Privacy policy</a></span>
     </div>
   </div>
 </footer>
+<div class="pop" id="pop" role="dialog" aria-modal="true" aria-labelledby="pop-title" hidden>
+  <div class="pop-card">
+    <button class="pop-x" id="pop-x" type="button" aria-label="Close"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>
+    <div class="pop-img" aria-hidden="true"><img src="img/block_hands_hd.jpg" alt="" loading="lazy" decoding="async"></div>
+    <form class="pop-body" id="pop-form" novalidate>
+      <p class="pop-kicker">The MUL list</p>
+      <h2 id="pop-title">First look at new prints</h2>
+      <p class="pop-lead">Each print is stamped by hand in Rajasthan, so colourways come in small runs. Join the list to hear first when new ones arrive.</p>
+      <label class="sr" for="pop-email">Email</label>
+      <input id="pop-email" name="email" type="email" autocomplete="email" placeholder="Your email" required maxlength="254">
+      <label class="sr" for="pop-name">First name (optional)</label>
+      <input id="pop-name" name="name" type="text" autocomplete="given-name" placeholder="First name (optional)" maxlength="80">
+      <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <button class="btn" type="submit">Join the list</button>
+      <p class="pop-fine">By joining, you agree to get our emails. A few a year, unsubscribe any time. <a href="/privacy/">Privacy policy</a></p>
+      <p class="pop-msg" id="pop-msg" role="status" aria-live="polite"></p>
+      <button class="pop-no" id="pop-no" type="button">No thanks</button>
+    </form>
+  </div>
+</div>
 <div class="scrim" id="scrim" hidden></div>
 <aside class="cart" id="cart" role="dialog" aria-modal="true" aria-labelledby="cart-title" hidden>
   <header class="cart-head">
@@ -1728,10 +1774,64 @@ $("#join").addEventListener("submit", async (e) => {
     const res = await fetch("/api/subscribe", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(data) });
     const out = await res.json().catch(() => ({}));
     if (!res.ok) throw new Error(out.error || "Something went wrong. Please try again.");
-    f.reset(); msg.textContent = "You're on the list. Thank you!";
+    f.reset(); msg.textContent = "You're on the list. Thank you!"; try { localStorage.setItem("mul-pop", JSON.stringify({ joined: true })); } catch (e) {}
   } catch (err) { msg.className = "join-msg err"; msg.textContent = err.message; }
   btn.disabled = false;
 });
+// Email pop-up: appears once, after 25 seconds or when someone is halfway down the page.
+// Closing it keeps it away for 14 days; joining (here or in the footer) keeps it away for good.
+(() => {
+  const pop = $("#pop"); if (!pop) return;
+  const KEY = "mul-pop", DAY = 864e5;
+  const read = () => { try { return JSON.parse(localStorage.getItem(KEY) || "null"); } catch (e) { return null; } };
+  const write = (v) => { try { localStorage.setItem(KEY, JSON.stringify(v)); } catch (e) {} };
+  const seen = read();
+  if (seen && (seen.joined || Date.now() - seen.closed < 14 * DAY)) return;
+  if (/order=/.test(location.search)) return;
+  let shown = false, lastFocus = null;
+  const open = () => {
+    if (shown || !$("#cart").hidden || document.querySelector(".mmenu:not([hidden])")) return;
+    shown = true; lastFocus = document.activeElement;
+    pop.hidden = false; requestAnimationFrame(() => pop.classList.add("on"));
+    document.body.style.overflow = "hidden";
+    setTimeout(() => $("#pop-email").focus({ preventScroll: true }), 80);
+    removeEventListener("scroll", onScroll);
+  };
+  const close = (joined) => {
+    pop.classList.remove("on"); document.body.style.overflow = "";
+    setTimeout(() => { pop.hidden = true; }, 250);
+    write(joined ? { joined: true } : { closed: Date.now() });
+    if (lastFocus && lastFocus.focus) lastFocus.focus({ preventScroll: true });
+  };
+  const onScroll = () => { const max = document.documentElement.scrollHeight - innerHeight; if (max > 0 && scrollY / max > 0.45) open(); };
+  addEventListener("scroll", onScroll, { passive: true });
+  setTimeout(open, 25000);
+  $("#pop-x").addEventListener("click", () => close(false));
+  $("#pop-no").addEventListener("click", () => close(false));
+  pop.addEventListener("click", (e) => { if (e.target === pop) close(false); });
+  pop.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") close(false);
+    if (e.key === "Tab") { const f = [...pop.querySelectorAll("button,input:not(.hp),a")].filter((x) => x.offsetParent);
+      if (e.shiftKey && document.activeElement === f[0]) { e.preventDefault(); f.at(-1).focus(); }
+      else if (!e.shiftKey && document.activeElement === f.at(-1)) { e.preventDefault(); f[0].focus(); } }
+  });
+  $("#pop-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const f = e.currentTarget, msg = $("#pop-msg"), btn = f.querySelector(".btn");
+    msg.className = "pop-msg"; msg.textContent = "";
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(f.email.value.trim())) { msg.className = "pop-msg err"; msg.textContent = "Please enter a valid email address."; return; }
+    btn.disabled = true;
+    try {
+      const res = await fetch("/api/subscribe", { method: "POST", headers: { "content-type": "application/json" },
+        body: JSON.stringify({ email: f.email.value, name: f.name.value, website: f.website.value, consent: true }) });
+      const out = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(out.error || "Something went wrong. Please try again.");
+      msg.textContent = "You're on the list. Thank you!"; write({ joined: true });
+      setTimeout(() => close(true), 1400);
+    } catch (err) { msg.className = "pop-msg err"; msg.textContent = err.message; }
+    btn.disabled = false;
+  });
+})();
 // Coming back from Stripe.
 function showToast(msg, ms=5000){ const t=$("#toast"); t.textContent=msg; t.classList.add("show"); setTimeout(()=>t.classList.remove("show"), ms); }
 (()=>{

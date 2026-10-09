@@ -8,4 +8,7 @@
     <image:image><image:loc>https://themulcollection.com/img/life_airport.jpg</image:loc></image:image>
     <image:image><image:loc>https://themulcollection.com/img/FullSizeRender.jpg</image:loc></image:image>
   </url>
+  <url>
+    <loc>https://themulcollection.com/privacy/</loc>
+  </url>
 </urlset>
