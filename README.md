@@ -12,6 +12,11 @@ The shop for the hand block-printed mul cotton Travel Pouch Set.
 | `netlify/functions/checkout.mjs` | Server code that turns the bag into a Stripe-hosted Checkout page |
 | `netlify/functions/stripe-webhook.mjs` | Receives Stripe's signed "payment done" events and saves each order |
 | `scripts/check-keys.sh` | Pre-commit check that blocks Stripe keys from being committed |
+| `public/admin/` | The admin page: orders, customers, email |
+| `netlify/functions/admin.mjs` | Admin API (password login, orders, customers, CSV, email) |
+| `netlify/functions/subscribe.mjs`, `unsubscribe.mjs` | The site's "Join the list" form and the unsubscribe link in emails |
+| `lib/customers.js`, `lib/email.js`, `lib/auth.js`, `lib/store.js` | Customer records, Resend email, signing, and storage (Netlify Blobs) |
+| `scripts/seo_build.py` | Writes the FAQ, meta tags and structured data from one list of facts |
 | `test/order.test.js` | Checks the pricing maths (`npm test`) |
 | `netlify.toml` | Tells Netlify where the site and the function live |
 
@@ -35,7 +40,23 @@ The shop for the hand block-printed mul cotton Travel Pouch Set.
 | `STRIPE_TAX_BEHAVIOR` | `exclusive` (tax added on top of $65) or `inclusive` | With tax |
 | `STRIPE_TAX_CODE` | A `txcd_…` code, or leave unset to use the preset in Stripe Tax settings | With tax |
 
+| `ADMIN_PASSWORD` | The password for /admin | Now |
+| `ADMIN_SECRET` | A long random string (40+ characters) that signs logins and unsubscribe links | Now |
+| `RESEND_API_KEY` | `re_…` from resend.com | When email is set up |
+| `EMAIL_FROM` | `The MUL Collection <hello@themulcollection.com>` (domain verified in Resend) | When email is set up |
+| `EMAIL_REPLY_TO` | Where replies go (optional) | When email is set up |
+| `ADMIN_EMAIL` | Where new-order alerts and test emails go | When email is set up |
+| `BUSINESS_ADDRESS` | Postal address printed in newsletters (US CAN-SPAM requires one) | Before the first newsletter |
+
 Keys never go in the code. The pre-commit hook blocks them.
+
+## The admin (themulcollection.com/admin)
+
+- **Orders**: every paid order with name, email, phone, address and colours. Tick *Shipped* when it's posted.
+- **Customers**: everyone who bought or joined the list, with search, filters and *Download CSV*. Tick people to email just them.
+- **Email**: write a message, preview it, send yourself a test, then send to the list, buyers, both, or the people you ticked. Every email has its own unsubscribe link. The free Resend plan allows 100 emails a day; anyone over that stays ticked for the next day.
+
+Who gets newsletters: people who joined via the site's form. Buyers are listed too, and can be emailed with *Everyone who has bought*. Anyone who unsubscribes is always left out.
 
 ## One-time setup
 

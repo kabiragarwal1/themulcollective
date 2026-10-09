@@ -932,6 +932,23 @@ h3{font-weight:700;letter-spacing:-.005em}
 .cart-foot{align-content:end;border-top:0!important}
 .cart-foot .sums{border-top:2px solid var(--ink);padding-top:14px}
 .cart-foot .btn{height:auto;min-height:52px;padding:15px 24px;align-self:end}
+/* footer: join the list */
+.join{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:clamp(18px,4vw,48px);align-items:start;padding:28px 0;margin:8px 0 22px;border-top:1px solid rgba(248,243,234,.25);border-bottom:1px solid rgba(248,243,234,.25)}
+@media (max-width:820px){.join{grid-template-columns:1fr}}
+.join-title{font-family:var(--font-display);font-size:clamp(1.6rem,3vw,2.1rem);margin:0 0 6px;color:var(--paper)}
+.join-copy p{margin:0;color:#D9D2C6;max-width:42ch}
+.join-fields{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.join-fields input[type=text],.join-fields input[type=email],.join-fields input[type=tel]{width:100%;padding:12px 14px;border-radius:4px;border:1px solid rgba(248,243,234,.4);background:rgba(248,243,234,.08);color:var(--paper);font:inherit}
+.join-fields input::placeholder{color:#C9C1B4}
+.join-fields #j-email{grid-column:1/-1}
+@media (max-width:480px){.join-fields{grid-template-columns:1fr}}
+.join-ok{grid-column:1/-1;display:flex;gap:10px;align-items:flex-start;font-size:.9rem;color:#E6DFD3;line-height:1.4}
+.join-ok input{width:18px;height:18px;margin-top:1px;accent-color:var(--marigold);flex:0 0 auto}
+.join .btn{grid-column:1/-1;justify-self:start;min-height:48px;padding:12px 28px}
+.join-msg{grid-column:1/-1;margin:0;font-weight:600;min-height:1.2em;color:var(--paper)}
+.join-msg.err{color:#F3C6BA}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 /* footer: indigo, ivory type, printed border on top */
 .foot{background:var(--indigo);color:var(--paper);position:relative;padding-top:72px}
 .foot::before{content:"";position:absolute;left:var(--gutter);right:var(--gutter);top:28px;height:1px;background:var(--marigold);opacity:.8}
@@ -1427,6 +1444,21 @@ h3{font-weight:700;letter-spacing:-.005em}
         <a href="#shop">Shop</a><a href="#craft">Origin</a><a href="#set">The set</a><a href="#where">Where it goes</a><a href="#reviews">Reviews</a><a href="#faq">FAQ</a>
       </nav>
     </div>
+    <form class="join" id="join" novalidate>
+      <div class="join-copy">
+        <h2 class="join-title">Join the list</h2>
+        <p>New prints, restocks and the odd travel note. A few emails a year, never more.</p>
+      </div>
+      <div class="join-fields">
+        <label class="sr" for="j-name">Name</label><input id="j-name" name="name" type="text" autocomplete="name" placeholder="Name" maxlength="80">
+        <label class="sr" for="j-email">Email</label><input id="j-email" name="email" type="email" autocomplete="email" placeholder="Email" required maxlength="254">
+        <label class="sr" for="j-phone">Phone (optional)</label><input id="j-phone" name="phone" type="tel" autocomplete="tel" placeholder="Phone (optional)" maxlength="20">
+        <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <label class="join-ok"><input type="checkbox" id="j-consent" required> Yes, email me about new prints and offers. Unsubscribe any time.</label>
+        <button class="btn" type="submit">Join</button>
+        <p class="join-msg" id="j-msg" role="status" aria-live="polite"></p>
+      </div>
+    </form>
     <div class="foot-cert">
       <div class="fc"><svg role="img" aria-label="GOTS certified seal"><use href="#gotsseal"/></svg><span>GOTS certified<small>Global Organic Textile Standard · Licence no. to be added</small></span></div>
       <div class="fc"><svg aria-hidden="true"><use href="#mark"/></svg><span>Handmade in Rajasthan<small>Hand block-printed and quilted by artisans</small></span></div>
@@ -1683,6 +1715,23 @@ $("#checkout").addEventListener("click", async ()=>{
 // Pressing Back from Stripe restores this page from the browser's memory, button and all,
 // so reset it whenever the page is shown again.
 addEventListener("pageshow", resetCheckout);
+// "Join the list" form in the footer.
+$("#join").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const f = e.currentTarget, msg = $("#j-msg"), btn = f.querySelector("button");
+  msg.className = "join-msg"; msg.textContent = "";
+  const data = { name: f.name.value, email: f.email.value, phone: f.phone.value, website: f.website.value, consent: $("#j-consent").checked };
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(data.email.trim())) { msg.className = "join-msg err"; msg.textContent = "Please enter a valid email address."; return; }
+  if (!data.consent) { msg.className = "join-msg err"; msg.textContent = "Please tick the box to join."; return; }
+  btn.disabled = true;
+  try {
+    const res = await fetch("/api/subscribe", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(data) });
+    const out = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(out.error || "Something went wrong. Please try again.");
+    f.reset(); msg.textContent = "You're on the list. Thank you!";
+  } catch (err) { msg.className = "join-msg err"; msg.textContent = err.message; }
+  btn.disabled = false;
+});
 // Coming back from Stripe.
 function showToast(msg, ms=5000){ const t=$("#toast"); t.textContent=msg; t.classList.add("show"); setTimeout(()=>t.classList.remove("show"), ms); }
 (()=>{
