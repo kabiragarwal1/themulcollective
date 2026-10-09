@@ -5,8 +5,8 @@ P = "public/index.html"
 SITE = "https://themulcollection.com"
 s = open(P, encoding="utf-8").read()
 
-DESC = ("A hand block-printed mul cotton travel set made in Rajasthan, India: a quilted pouch that hangs off "
-        "any handle, a soft mul blanket and a zip-top toiletry pouch. Machine washable. $65, or 2 sets for $120, "
+DESC = ("A hand block-printed mul cotton travel set made in Rajasthan, India: a quilted pouch that slides over "
+        "your carry-on handle, a soft mul blanket and a zip-top toiletry pouch. Machine washable. $65, or 2 sets for $120, "
         "with free US shipping.")
 COLOURS = ["Scarlet Bloom", "Sage Tree", "Lemon Foliage", "Pink Jungle"]
 IMAGES = ["img/og.jpg", "img/IMG_3662.jpg", "img/IMG_3666.jpg", "img/life_airport.jpg", "img/FullSizeRender.jpg",
@@ -14,7 +14,7 @@ IMAGES = ["img/og.jpg", "img/IMG_3662.jpg", "img/IMG_3666.jpg", "img/life_airpor
 
 FAQ = [
   ("What's in The MUL Collection travel pouch set?",
-   "Three pieces: a large quilted pouch with a two-button flap, a front pocket, a hook to hang it anywhere and a sleeve "
+   "Three pieces: a large quilted pouch with a two-button flap, a front pocket and a sleeve "
    "that slides over a trolley handle; a soft mul cotton blanket that folds into the pouch; and a zip-top toiletry pouch."),
   ("What is mul cotton?",
    "Mul, or mulmul, is a fine, featherlight cotton that Indian homes have used for generations. It's breathable, "
@@ -29,8 +29,8 @@ FAQ = [
    "Yes. The main compartment of the large pouch fits a standard-size tablet, with room for snacks and a change of clothes. "
    "The front pocket suits earbuds and the things you reach for first."),
   ("How does it attach to my luggage?",
-   "A quilted sleeve on the back slides over a carry-on trolley handle, and a hook on top lets you hang it on a "
-   "hotel door, a car seat, a bed rail or a peg."),
+   "A quilted sleeve on the back slides over a carry-on trolley handle, so the pouch rides on your suitcase "
+   "through the airport and stays within reach."),
   ("Where is it made?",
    "Every set is handmade in Rajasthan, India. Each print is stamped by hand with carved wooden blocks, then quilted "
    "and stitched by artisans, so no two sets are exactly alike. The set is GOTS (Global Organic Textile Standard) certified."),
