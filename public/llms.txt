@@ -1,0 +1,21 @@
+# The MUL Collection
+
+> Hand block-printed mul cotton travel set, handmade in Rajasthan, India, sold online to US customers at https://themulcollection.com.
+
+## The product: The Travel Pouch Set
+- Three pieces: a large quilted pouch (two-button flap, front pocket, hook to hang it anywhere, sleeve that slides over a carry-on trolley handle), a mul cotton blanket that folds into the pouch, and a zip-top toiletry pouch.
+- Material: mul (mulmul) cotton, hand block-printed with carved wooden blocks, then quilted with channel stitching.
+- Fits a standard-size tablet in the main compartment.
+- Not waterproof or water-resistant. Every piece is machine washable and can go in the dryer.
+- Colourways: Scarlet Bloom, Sage Tree, Lemon Foliage, Pink Jungle. Each set is printed by hand, so no two are exactly alike.
+- GOTS (Global Organic Textile Standard) certified.
+
+## Price and shipping
+- One set: $65 USD. Two sets: $120 USD, any combination of colourways.
+- Free shipping to US addresses. Secure checkout by Stripe.
+
+## Links
+- Shop: https://themulcollection.com/#shop
+- How it's made: https://themulcollection.com/#craft
+- Customer stories: https://themulcollection.com/#reviews
+- FAQ: https://themulcollection.com/#faq
