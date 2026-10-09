@@ -1,4 +1,10 @@
 <title>The MUL Collection · Hand block-printed travel pouch set</title>
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#A8432F">
+
 <meta name="description" content="A hand block-printed mul cotton travel pouch set, made in Rajasthan: quilted pouch, mul blanket and toiletry pouch. $65, or 2 for $120. Free US shipping.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Eczar:wght@500;600;700&family=Amita:wght@700&family=Schibsted+Grotesk:ital,wght@0,400;0,500;0,700;0,800;0,900;1,400&display=swap">
@@ -1402,10 +1408,14 @@ document.addEventListener("keydown", e=>{
 });
 // Checkout: send the bag (colourway ids + quantities only) to our server function,
 // which prices it and returns a Stripe Checkout page to go to.
+const CHECKOUT_LABEL = "Checkout";
+function resetCheckout(){ const btn=$("#checkout"); btn.disabled=false; btn.textContent=CHECKOUT_LABEL; }
 $("#checkout").addEventListener("click", async ()=>{
   const btn=$("#checkout"), note=$("#cart-note");
-  btn.disabled=true; const label=btn.textContent; btn.textContent="Opening secure checkout…";
+  btn.disabled=true; btn.textContent="Opening secure checkout…";
   note.classList.remove("warn"); note.textContent="Secure checkout by Stripe. Ships to US addresses.";
+  // If the hand-off to Stripe stalls (slow network), give the button back after 15s.
+  const guard = setTimeout(resetCheckout, 15000);
   try{
     const res = await fetch("/api/checkout", { method:"POST", headers:{ "content-type":"application/json" },
       body: JSON.stringify({ items: cart.map(l=>({ id:l.id, qty:l.qty })) }) });
@@ -1413,10 +1423,14 @@ $("#checkout").addEventListener("click", async ()=>{
     if(!res.ok || !data.url) throw new Error(data.error || "We couldn't open checkout. Please try again.");
     location.href = data.url;
   }catch(err){
+    clearTimeout(guard);
     note.classList.add("warn"); note.textContent = err.message;
-    btn.disabled=false; btn.textContent=label;
+    resetCheckout();
   }
 });
+// Pressing Back from Stripe restores this page from the browser's memory, button and all,
+// so reset it whenever the page is shown again.
+addEventListener("pageshow", resetCheckout);
 // Coming back from Stripe.
 function showToast(msg, ms=5000){ const t=$("#toast"); t.textContent=msg; t.classList.add("show"); setTimeout(()=>t.classList.remove("show"), ms); }
 (()=>{
