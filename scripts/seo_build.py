@@ -8,7 +8,20 @@ s = open(P, encoding="utf-8").read()
 DESC = ("A hand block-printed mul cotton travel set made in Rajasthan, India: a quilted pouch that slides over "
         "your carry-on handle, a soft mul blanket and a zip-top toiletry pouch. Machine washable. $65, or 2 sets for $120, "
         "with free US shipping.")
+# Short version for Google's results page (keep under ~155 characters).
+META_DESC = ("Quilted pouch that slides over your carry-on handle, a mul cotton blanket and a toiletry pouch. "
+             "Hand block-printed in India. $65, free US shipping.")
+TITLE = "Block-Printed Mul Cotton Travel Pouch Set · The MUL Collection"
+EMAIL = "hello@themulcollection.com"
+SAME_AS = []  # add Etsy, Instagram, Pinterest profile URLs here when ready
 COLOURS = ["Scarlet Bloom", "Sage Tree", "Lemon Foliage", "Pink Jungle"]
+# One entry per colourway: site id (matches the shop's colour picker and lib/order.js), name, photos.
+VARIANTS = [
+  ("scarlet", "Scarlet Bloom", ["img/IMG_3662.jpg", "img/IMG_3666.jpg", "img/IMG_3663.jpg", "img/life_airport.jpg"]),
+  ("sage", "Sage Tree", ["img/FullSizeRender.jpg", "img/FullSizeRender_3.jpg", "img/set_pouch_sage.jpg"]),
+  ("lemon", "Lemon Foliage", ["img/FullSizeRender_2.jpg", "img/IMG_3688.jpg", "img/set_toiletry_lemon.jpg"]),
+  ("pink", "Pink Jungle", ["img/FullSizeRender_6.jpg"]),
+]
 IMAGES = ["img/og.jpg", "img/IMG_3662.jpg", "img/IMG_3666.jpg", "img/life_airport.jpg", "img/FullSizeRender.jpg",
           "img/FullSizeRender_2.jpg", "img/FullSizeRender_6.jpg"]
 
@@ -19,6 +32,9 @@ FAQ = [
   ("What is mul cotton?",
    "Mul, or mulmul, is a fine, featherlight cotton that Indian homes have used for generations. It's breathable, "
    "cool in the heat, a soft layer on a cold flight, and it gets softer with every wash."),
+  ("Is mul cotton the same as muslin?",
+   "They're close relatives. Mul (mulmul) is a fine, soft, plain-weave cotton from India, the same family of cloth "
+   "as the muslin used for baby swaddles, and among the lightest and softest kinds of it."),
   ("Is the travel pouch set waterproof?",
    "No. The set isn't waterproof or water-resistant. Every piece is machine washable instead, so spills and travel "
    "grime wash straight out."),
@@ -31,6 +47,9 @@ FAQ = [
   ("How does it attach to my luggage?",
    "A quilted sleeve on the back slides over a carry-on trolley handle, so the pouch rides on your suitcase "
    "through the airport and stays within reach."),
+  ("Does the pouch hang on a hook, door or car seat?",
+   "No. It has no hook or hanging strap. It attaches one way: the quilted sleeve on the back slides over a carry-on "
+   "trolley handle. Off the suitcase, it fits in a tote, a backpack or the seat pocket."),
   ("Where is it made?",
    "Every set is handmade in Rajasthan, India. Each print is stamped by hand with carved wooden blocks, then quilted "
    "and stitched by artisans, so no two sets are exactly alike. The set is GOTS (Global Organic Textile Standard) certified."),
@@ -42,30 +61,44 @@ FAQ = [
 
 def abs_url(p): return f"{SITE}/{p}"
 
+shipping = {
+  "@type": "OfferShippingDetails", "@id": f"{SITE}/#shipping",
+  "shippingRate": {"@type": "MonetaryAmount", "value": "0", "currency": "USD"},
+  "shippingDestination": {"@type": "DefinedRegion", "addressCountry": "US"}
+}
+
+def variant(cid, name, imgs):
+  return {
+    "@type": "Product", "@id": f"{SITE}/#product-{cid}",
+    "sku": f"MUL-TPS-{cid.upper()}", "mpn": f"MUL-TPS-{cid.upper()}",
+    "name": f"The Travel Pouch Set – {name}", "color": name,
+    "image": [abs_url(i) for i in imgs],
+    "offers": {
+      "@type": "Offer", "url": f"{SITE}/?colour={cid}", "price": "65.00", "priceCurrency": "USD",
+      "availability": "https://schema.org/InStock", "itemCondition": "https://schema.org/NewCondition",
+      "seller": {"@id": f"{SITE}/#org"}, "shippingDetails": {"@id": f"{SITE}/#shipping"}
+    }
+  }
+
 product = {
-  "@type": "Product", "@id": f"{SITE}/#product",
-  "name": "The Travel Pouch Set", "description": DESC,
+  "@type": "ProductGroup", "@id": f"{SITE}/#product",
+  "name": "The Travel Pouch Set", "description": DESC, "url": SITE + "/",
+  "productGroupID": "MUL-TPS",
   "brand": {"@type": "Brand", "name": "The MUL Collection"},
   "image": [abs_url(i) for i in IMAGES],
   "material": "Mul (mulmul) cotton, hand block-printed and quilted",
-  "color": ", ".join(COLOURS),
   "countryOfOrigin": {"@type": "Country", "name": "India"},
   "category": "Travel accessories > Travel pouches",
-  "offers": {
-    "@type": "Offer", "url": f"{SITE}/#shop", "price": "65.00", "priceCurrency": "USD",
-    "availability": "https://schema.org/InStock", "itemCondition": "https://schema.org/NewCondition",
-    "seller": {"@id": f"{SITE}/#org"},
-    "shippingDetails": {
-      "@type": "OfferShippingDetails",
-      "shippingRate": {"@type": "MonetaryAmount", "value": "0", "currency": "USD"},
-      "shippingDestination": {"@type": "DefinedRegion", "addressCountry": "US"}
-    }
-  }
+  "variesBy": ["https://schema.org/color"],
+  "hasVariant": [variant(*v) for v in VARIANTS],
 }
 graph = {"@context": "https://schema.org", "@graph": [
-  {"@type": "Organization", "@id": f"{SITE}/#org", "name": "The MUL Collection", "url": SITE + "/",
-   "logo": abs_url("icon-512.png"),
-   "description": "Hand block-printed mul cotton travel goods, made in Rajasthan, India."},
+  shipping,
+  {"@type": "OnlineStore", "@id": f"{SITE}/#org", "name": "The MUL Collection",
+   "alternateName": ["MUL Collection", "The Mul Collection"], "url": SITE + "/",
+   "logo": abs_url("icon-512.png"), "image": abs_url("img/og.jpg"), "email": EMAIL,
+   "description": "Hand block-printed mul cotton travel goods, made in Rajasthan, India, and sold online in the United States.",
+   **({"sameAs": SAME_AS} if SAME_AS else {})},
   {"@type": "WebSite", "@id": f"{SITE}/#website", "url": SITE + "/", "name": "The MUL Collection",
    "publisher": {"@id": f"{SITE}/#org"}, "inLanguage": "en-US"},
   product,
@@ -74,13 +107,13 @@ graph = {"@context": "https://schema.org", "@graph": [
 ]}
 
 head = f'''<!-- seo:start -->
-<meta name="description" content="{html.escape(DESC)}">
+<meta name="description" content="{html.escape(META_DESC)}">
 <link rel="canonical" href="{SITE}/">
 <meta name="robots" content="index, follow, max-image-preview:large">
 <meta property="og:type" content="product">
 <meta property="og:site_name" content="The MUL Collection">
 <meta property="og:title" content="The Travel Pouch Set · The MUL Collection">
-<meta property="og:description" content="{html.escape(DESC)}">
+<meta property="og:description" content="{html.escape(META_DESC)}">
 <meta property="og:url" content="{SITE}/">
 <meta property="og:image" content="{abs_url('img/og.jpg')}">
 <meta property="og:image:width" content="1200">
@@ -91,7 +124,7 @@ head = f'''<!-- seo:start -->
 <meta property="product:price:currency" content="USD">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="The Travel Pouch Set · The MUL Collection">
-<meta name="twitter:description" content="{html.escape(DESC)}">
+<meta name="twitter:description" content="{html.escape(META_DESC)}">
 <meta name="twitter:image" content="{abs_url('img/og.jpg')}">
 <script type="application/ld+json">
 {json.dumps(graph, ensure_ascii=False, indent=1)}
@@ -143,6 +176,8 @@ s = s.replace('<a href="#reviews">Reviews</a>\n      </nav>', '<a href="#reviews
 cut = s.index('<section class="craft"')
 tail = re.sub(r'<img (?![^>]*loading=)', '<img loading="lazy" decoding="async" ', s[cut:])
 s = s[:cut] + tail
+
+s = re.sub(r"<title>.*?</title>", f"<title>{html.escape(TITLE)}</title>", s, count=1)
 
 open(P, "w", encoding="utf-8").write(s)
 print("faq items:", len(FAQ), "| ld+json bytes:", len(json.dumps(graph)))
