@@ -28,7 +28,7 @@ IMAGES = ["img/og.jpg", "img/IMG_3662.jpg", "img/IMG_3666.jpg", "img/life_airpor
 FAQ = [
   ("What's in The MUL Collection travel pouch set?",
    "Three pieces: a large quilted pouch with a two-button flap, a front pocket and a sleeve "
-   "that slides over a trolley handle; a soft mul cotton blanket that folds into the pouch; and a zip-top toiletry pouch."),
+   "that slides over a trolley handle; a soft mul cotton blanket that folds into the pouch; and a zip-top toiletry pouch for toiletries, or for cables, chargers and small electronics."),
   ("What is mul cotton?",
    "Mul, or mulmul, is a fine, featherlight cotton that Indian homes have used for generations. It's breathable, "
    "cool in the heat, a soft layer on a cold flight, and it gets softer with every wash."),
